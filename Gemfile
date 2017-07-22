@@ -10,6 +10,7 @@ gem 'turbolinks', '~> 5'
 gem 'webpacker'
 
 group :development, :test do
+  gem 'dotenv-rails'
   gem 'pry-byebug'
   gem 'pry-rails'
 end
