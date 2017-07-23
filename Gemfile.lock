@@ -7,6 +7,14 @@ GIT
       activesupport (>= 4)
       rack (>= 1.3)
 
+GIT
+  remote: https://github.com/octokit/octokit.rb.git
+  revision: fa3caf34f4219eb35ecbeed27a8fc80587b005de
+  branch: master
+  specs:
+    octokit (4.7.0)
+      sawyer (~> 0.8.0, >= 0.5.3)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -98,8 +106,6 @@ GEM
     nio4r (2.1.0)
     nokogiri (1.8.0)
       mini_portile2 (~> 2.2.0)
-    octokit (4.7.0)
-      sawyer (~> 0.8.0, >= 0.5.3)
     pg (0.21.0)
     pry (0.10.4)
       coderay (~> 1.1.0)
@@ -220,7 +226,7 @@ DEPENDENCIES
   http (~> 2.2)
   jwt (~> 1.5)
   listen (~> 3.1.5)
-  octokit (~> 4.7)
+  octokit (~> 4.7)!
   pg (~> 0.21)
   pry-byebug (~> 3.4)
   pry-rails (~> 0.3.6)
