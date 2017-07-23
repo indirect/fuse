@@ -22,6 +22,8 @@ ActiveRecord::Schema.define(version: 20170723043815) do
     t.string "target_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "access_token"
+    t.datetime "access_token_expires_at"
   end
 
 end
