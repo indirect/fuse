@@ -49,6 +49,15 @@ class GithubWebhooksController < ActionController::Base
   end
 
   def github_installation(payload)
+    case payload[:action]
+    when "created"
+      Installation.update_from_github!(payload[:installation])
+    when "deleted"
+      gid = payload.dig(:installation, :id)
+      Installation.where(github_id: gid).destroy_all if gid
+    else
+      raise RuntimeError, "Unknown installation action #{payload[:action]}!"
+    end
   end
 
   def github_installation_repositories(payload)
