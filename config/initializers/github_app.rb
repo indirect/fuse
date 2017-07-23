@@ -1,7 +1,4 @@
-require "current"
-require "github/app"
+require "github"
 
-Current.github_app = Github::App.new(
-  ENV.fetch("GITHUB_APP_ID"),
-  ENV.fetch("GITHUB_APP_PRIVATE_KEY")
-)
+Github.app_id = ENV.fetch("GITHUB_APP_ID"),
+Github.app_private_key = ENV.fetch("GITHUB_APP_PRIVATE_KEY")
