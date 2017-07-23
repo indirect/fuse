@@ -16,10 +16,7 @@ ActiveRecord::Schema.define(version: 20170723075738) do
   enable_extension "plpgsql"
 
   create_table "installations", force: :cascade do |t|
-    t.bigint "github_id"
-    t.bigint "target_id"
-    t.string "repository_selection"
-    t.string "target_type"
+    t.bigint "github_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "access_token"
