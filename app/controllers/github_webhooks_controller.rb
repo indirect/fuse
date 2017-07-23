@@ -51,7 +51,8 @@ class GithubWebhooksController < ActionController::Base
   def github_installation(payload)
     case payload[:action]
     when "created"
-      Installation.update_from_github!(payload[:installation])
+      install = Installation.from_github!(payload[:installation])
+      Repository.import_from_github!(payload[:repositories], installation_id: install.id)
     when "deleted"
       gid = payload.dig(:installation, :id)
       Installation.where(github_id: gid).destroy_all if gid

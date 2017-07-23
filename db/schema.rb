@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170723075738) do
+ActiveRecord::Schema.define(version: 20170723083626) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,4 +24,17 @@ ActiveRecord::Schema.define(version: 20170723075738) do
     t.index ["github_id"], name: "index_installations_on_github_id", unique: true
   end
 
+  create_table "repositories", force: :cascade do |t|
+    t.bigint "installation_id"
+    t.bigint "github_id"
+    t.string "full_name"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["full_name"], name: "index_repositories_on_full_name"
+    t.index ["github_id"], name: "index_repositories_on_github_id"
+    t.index ["installation_id"], name: "index_repositories_on_installation_id"
+  end
+
+  add_foreign_key "repositories", "installations"
 end
