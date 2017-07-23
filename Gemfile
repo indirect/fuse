@@ -3,6 +3,7 @@ git_source(:github) { |name|  "https://github.com/#{name}.git" }
 
 gem 'rails', '~> 5.1.2'
 
+gem 'github_webhook', '~> 1.0.4'
 gem 'pg', '~> 0.18'
 gem 'puma', '~> 3.7'
 gem 'sass-rails', '~> 5.0'
