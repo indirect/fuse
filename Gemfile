@@ -3,6 +3,7 @@ git_source(:github) { |name|  "https://github.com/#{name}.git" }
 
 gem "rails", "5.1.2"
 
+gem "jwt", "~> 1.5"
 gem "github_webhook", "~> 1.0", github: "indirect/github_webhook", branch: "app-events"
 gem "pg", "~> 0.21"
 gem "puma", "~> 3.9"
