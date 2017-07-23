@@ -21,8 +21,10 @@ group :development, :test do
 end
 
 group :development do
+  gem "guard-rspec", require: false
   gem "listen", "~> 3.1.5"
   gem "spring", "~> 2.0"
+  gem "spring-commands-rspec"
   gem "spring-watcher-listen", "~> 2.0"
   gem "web-console", "~> 3.5"
 end
