@@ -62,6 +62,16 @@ class GithubWebhooksController < ActionController::Base
   end
 
   def github_installation_repositories(payload)
+    case payload[:action]
+    when "added"
+      install = Installation.from_github!(payload[:installation])
+      Repository.import_from_github!(payload[:repositories_added], installation_id: install.id)
+    when "removed"
+      removed_ids = payload[:repositories_removed].map{|r| r[:id] }
+      Repository.where(github_id: removed_ids).delete_all
+    else
+      raise RuntimeError, "Unknown installation_repositories action #{payload[:action]}!"
+    end
   end
 
   def github_integration_installation(payload)
