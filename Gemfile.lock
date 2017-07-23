@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/indirect/github_webhook.git
-  revision: 61a1c9cfdc6b270bf68563719eb94f0891a25864
+  revision: 3295dcf94e77e2c72c665eddf11218126bad681a
   branch: app-events
   specs:
     github_webhook (1.0.4)
