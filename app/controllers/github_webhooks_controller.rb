@@ -3,8 +3,9 @@ class GithubWebhooksController < ActionController::Base
 
   def create
     event_name = request.headers['X-GitHub-Event']
-    logger.tagged("GithubWebhook", event_name) { logger.debug(json_body) }
-    super
+    logger.tagged("GithubWebhook", event_name) do
+      super
+    end
   end
 
   def webhook_secret(payload)
