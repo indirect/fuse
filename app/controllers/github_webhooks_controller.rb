@@ -86,6 +86,17 @@ class GithubWebhooksController < ActionController::Base
   end
 
   def github_issue_comment(payload)
+    case payload[:action]
+    when "created"
+      case payload[:comment][:body]
+      when /#{bot.name} r\+/
+        id = payload[:installation][:id]
+        repo = payload[:repository][:full_name]
+        issue = payload[:issue][:number]
+        body = "Let's dance"
+        bot.comment(id, repo, issue, body)
+      end
+    end
   end
 
   def github_label(payload)
@@ -155,6 +166,22 @@ class GithubWebhooksController < ActionController::Base
   end
 
   def github_watch(payload)
+  end
+
+private
+
+  class Bot
+    def name
+      Github.app.name
+    end
+
+    def comment(install_id, name, number, body)
+      Installation.find_by_github_id!(install_id).client.add_comment(name, number, body)
+    end
+  end
+
+  def bot
+    @bot ||= Bot.new
   end
 
 end
