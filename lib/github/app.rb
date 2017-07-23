@@ -11,6 +11,10 @@ module Github
       @private_key = key
     end
 
+    def inspect
+      "#<Github::App id=#{github_id}>"
+    end
+
     def bearer_token(time = Time.now)
       payload = {
         iat: time.to_i,
