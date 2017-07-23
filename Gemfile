@@ -1,24 +1,24 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 git_source(:github) { |name|  "https://github.com/#{name}.git" }
 
-gem 'rails', '~> 5.1.2'
+gem "rails", "5.1.2"
 
-gem 'pg', '~> 0.18'
-gem 'puma', '~> 3.7'
-gem 'github_webhook', '~> 1.0', github: 'indirect/github_webhook', branch: 'app-events'
-gem 'sass-rails', '~> 5.0'
-gem 'turbolinks', '~> 5'
-gem 'webpacker'
+gem "github_webhook", "~> 1.0", github: "indirect/github_webhook", branch: "app-events"
+gem "pg", "~> 0.21"
+gem "puma", "~> 3.9"
+gem "sass-rails", "~> 5.0"
+gem "turbolinks", "~> 5.0"
+gem "webpacker", "~> 2.0"
 
 group :development, :test do
-  gem 'dotenv-rails'
-  gem 'pry-byebug'
-  gem 'pry-rails'
+  gem "dotenv-rails", "~> 2.2"
+  gem "pry-byebug", "~> 3.4"
+  gem "pry-rails", "~> 0.3.6"
 end
 
 group :development do
-  gem 'listen', '>= 3.0.5', '< 3.2'
-  gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
-  gem 'web-console', '>= 3.3.0'
+  gem "listen", "~> 3.1.5"
+  gem "spring", "~> 2.0"
+  gem "spring-watcher-listen", "~> 2.0"
+  gem "web-console", "~> 3.5"
 end
