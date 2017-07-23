@@ -90,11 +90,13 @@ class GithubWebhooksController < ActionController::Base
     when "created"
       case payload[:comment][:body]
       when /#{bot.name} r\+/
-        id = payload[:installation][:id]
         repo = payload[:repository][:full_name]
         issue = payload[:issue][:number]
-        body = "Let's dance"
-        bot.comment(id, repo, issue, body)
+        bot.comment(repo, issue, "Let's dance")
+
+        approver = payload[:comment][:user][:login]
+        message = "Merge ##{issue}, r=#{approver}"
+        bot.merge(repo, issue, message)
       end
     end
   end
@@ -171,17 +173,42 @@ class GithubWebhooksController < ActionController::Base
 private
 
   class Bot
+    attr_reader :github
+
+    def initialize(github_client)
+      @github = github_client
+    end
+
     def name
       Github.app.name
     end
 
-    def comment(install_id, name, number, body)
-      Installation.find_by_github_id!(install_id).client.add_comment(name, number, body)
+    def comment(repo, issue, body)
+      github.add_comment(repo, issue, body)
+    end
+
+    def merge(repo, issue, message)
+      pr = github.pull_request(repo, issue)
+
+      # Create a merge commit in the base branch from the PR head
+      github.post "#{Octokit::Repository.path repo}/merges", {
+        base: pr.base.ref, head: pr.head.ref, commit_message: message
+      }
+
+      # Delete the PR head if it's in the same repo as the base
+      if pr.head.repo.full_name == pr.base.repo.full_name
+        github.delete_branch(repo, pr.head.ref)
+      end
     end
   end
 
+  def installation
+    id = json_body.dig(:installation, :id)
+    @installation ||= Installation.find_by_github_id!(id) if id
+  end
+
   def bot
-    @bot ||= Bot.new
+    @bot ||= Bot.new(installation.client) if installation
   end
 
 end
