@@ -4,11 +4,12 @@ require "time"
 
 module Github
   class App
-    attr_reader :github_id, :private_key
+    attr_reader :github_id, :name, :private_key
 
-    def initialize(id, key)
-      @github_id = id
-      @private_key = key
+    def initialize(options)
+      @github_id = options.fetch(:id)
+      @name = options.fetch(:name)
+      @private_key = options.fetch(:private_key)
     end
 
     def inspect

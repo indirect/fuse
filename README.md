@@ -11,6 +11,11 @@ First, get the App ID from the page on GitHub you see after creating an app.
 ```bash
 $ echo GITHUB_APP_ID=GITHUB_TELLS_YOU_THIS_ON_THE_APP_PAGE > .env
 ```
+Next, store the name you set for your app in the config:
+
+```bash
+$ echo GITHUB_APP_NAME=YOU_CHOSE_THIS > .env
+```
 
 Then, push the button to generate and download a private key for your app, and use the path to that file here:
 

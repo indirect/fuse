@@ -1,12 +1,21 @@
 require "threaded_memoize"
 
+# Setup:
+#   Github.app_config(
+#     app_id: 123,
+#     app_name: "Fuse",
+#     app_private_key: "abc123..."
+#  )
 module Github
-  mattr_accessor :app_id, :app_private_key
   extend ThreadedMemoize
+
+  def self.app_config(config)
+    @app_config = config
+  end
 
   def self.app
     require "github/app"
-    @app ||= App.new(app_id, app_private_key)
+    @app ||= App.new(@app_config)
   end
 
   def self.app_client
