@@ -39,4 +39,6 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  ENV["GITHUB_APP_PRIVATE_KEY"] = Rails.root.join("spec/support/app_key.pem").read
 end
