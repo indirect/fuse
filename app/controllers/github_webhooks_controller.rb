@@ -53,6 +53,14 @@ class GithubWebhooksController < ActionController::Base
   def github_installation_repositories(payload)
   end
 
+  def github_integration_installation
+    # deprecated duplicate of `installation`, so we ignore it
+  end
+
+  def github_integration_installation_repositories
+    # deprecated duplicate of `installation_repositories`, so we ignore it
+  end
+
   def github_issues(payload)
   end
 
