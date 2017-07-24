@@ -97,10 +97,16 @@ class GithubWebhooksController < ActionController::Base
 
         if allowed?(repo, approver)
           issue = payload[:issue][:number]
-          bot.comment(repo, issue, "Let's dance")
+          comment = bot.comment(repo, issue, "⚔️ Let's dance")
 
-          message = "Merge ##{issue}, r=#{approver}"
-          bot.test(repo, issue, message)
+          message = <<~MESSAGE
+            #{payload[:issue][:title]}
+
+            #{payload[:issue][:body]}
+
+            Merges ##{issue}, r=#{approver}
+          MESSAGE
+          sha = bot.queue_test(repo, issue, message)
         end
       end
     end
