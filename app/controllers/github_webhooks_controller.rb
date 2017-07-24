@@ -88,6 +88,8 @@ class GithubWebhooksController < ActionController::Base
   end
 
   def github_issue_comment(payload)
+    return unless payload[:issue].has_key?(:pull_request)
+
     case payload[:action]
     when "created"
       case payload[:comment][:body]
