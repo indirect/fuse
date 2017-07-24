@@ -185,7 +185,7 @@ private
   end
 
   def bot
-    @bot ||= Bot.new(installation.client) if installation
+    @bot ||= Bot.new(installation.client, Github.app.name) if installation
   end
 
   def allowed?(repo, user)

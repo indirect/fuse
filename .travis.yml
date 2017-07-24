@@ -3,6 +3,9 @@ dist: trusty
 language: ruby
 cache: bundler
 
+services:
+  - postgresql
+
 branches:
   except:
     - fuse/test.tmp
