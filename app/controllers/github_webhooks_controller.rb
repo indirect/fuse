@@ -97,7 +97,7 @@ class GithubWebhooksController < ActionController::Base
 
         if allowed?(repo, approver)
           issue = payload[:issue][:number]
-          comment = bot.comment(repo, issue, "⚔️ Let's dance")
+          comment = bot.comment(repo, issue, "⚔️ let's dance")
 
           message = <<~MESSAGE
             #{payload[:issue][:title]}
@@ -176,15 +176,13 @@ class GithubWebhooksController < ActionController::Base
     return head(:ok) unless branch_names.include?("#{bot.name}/test")
 
     repo = payload[:name]
+    sha = payload[:sha]
+    issue = TestBuild.find_by_sha!(sha).issue_number
 
     case payload[:state]
     when "pending"
-      comment = TestBuild.find_by_sha!(payload[:sha]).comment_id
-      addendum = "🚧 [Test status](#{payload[:target_url]})"
-      bot.announce_test(repo, comment, addendum)
+      bot.comment(repo, issue, "🚧 [test status](#{payload[:target_url]})")
     when "success"
-      sha = payload[:sha]
-      issue = TestBuild.find_by_sha!(sha).issue_number
       bot.comment(repo, issue, "✨ test passed! merging...")
       bot.merge(repo, issue, sha)
     end
