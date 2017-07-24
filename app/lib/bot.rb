@@ -11,6 +11,12 @@ class Bot
     github.add_comment(repo, issue, body)
   end
 
+  def append_comment(repo, comment, addendum)
+    body = github.issue_comment(repo, comment)[:body]
+    new_body = [body, "\n", addendum].join("\n")
+    github.update_comment(repo, comment, new_body)
+  end
+
   def queue_test(repo, issue, message)
     # TODO store this in the database and update it on push webhooks
     pr = github.pull_request(repo, issue)
@@ -24,7 +30,7 @@ class Bot
 
     # Create a merge commit in the testing branch
     merge = github.post "#{Octokit::Repository.path repo}/merges", {
-      base: temp, head: pr.head.ref, commit_message: message
+      base: "#{name}/test.tmp", head: pr.head.ref, commit_message: message
     }
 
     # Move the merge commit to be tested by Travis
@@ -48,7 +54,11 @@ class Bot
 
     # Delete the PR head if it's in the same repo as the base
     if pr.head.repo.full_name == pr.base.repo.full_name
-      github.delete_branch(repo, pr.head.ref)
+      begin
+        github.delete_branch(repo, pr.head.ref)
+      rescue Octokit::UnprocessableEntity
+        # cool, it must already be gone
+      end
     end
   end
 end

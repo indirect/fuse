@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170723083626) do
+ActiveRecord::Schema.define(version: 20170724072547) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,5 +36,17 @@ ActiveRecord::Schema.define(version: 20170723083626) do
     t.index ["installation_id"], name: "index_repositories_on_installation_id"
   end
 
+  create_table "test_builds", force: :cascade do |t|
+    t.string "sha"
+    t.bigint "issue_number"
+    t.string "state"
+    t.bigint "repository_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["repository_id"], name: "index_test_builds_on_repository_id"
+    t.index ["sha"], name: "index_test_builds_on_sha"
+  end
+
   add_foreign_key "repositories", "installations"
+  add_foreign_key "test_builds", "repositories"
 end

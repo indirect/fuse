@@ -91,16 +91,24 @@ class GithubWebhooksController < ActionController::Base
     case payload[:action]
     when "created"
       case payload[:comment][:body]
-      when /\b#{Github.app.name} r\+\b/
+      when command("r+")
         repo = payload[:repository][:full_name]
         approver = payload[:comment][:user][:login]
 
         if allowed?(repo, approver)
           issue = payload[:issue][:number]
-          bot.comment(repo, issue, "Let's dance")
+          bot.comment(repo, issue, "⚔️ let's dance")
 
-          message = "Merge ##{issue}, r=#{approver}"
-          bot.test(repo, issue, message)
+          message = <<~MESSAGE
+            #{payload[:issue][:title]}
+
+            #{payload[:issue][:body]}
+
+            Merges ##{issue}, r=#{approver}
+          MESSAGE
+          sha = bot.queue_test(repo, issue, message)
+          repository = Repository.find_by_full_name!(repo)
+          repository.test_builds.create!(sha: sha, issue_number: issue)
         end
       end
     end
@@ -164,6 +172,25 @@ class GithubWebhooksController < ActionController::Base
   end
 
   def github_status(payload)
+    branch_names = payload[:branches].map{|b| b[:name] }
+    return head(:ok) unless branch_names.include?("#{bot.name}/test")
+
+    repo = payload[:name]
+    sha = payload[:sha]
+    test_build = TestBuild.find_by_sha!(sha)
+    issue = testbuild.issue_number
+
+    case payload[:state]
+    when "pending"
+      return head(:ok) if test_build.state == "pending"
+      test_build.update(state: "pending")
+      bot.comment(repo, issue, "🚧 [test status](#{payload[:target_url]})")
+    when "success"
+      return head(:ok) if test_build.state == "success"
+      test_build.update(state: "success")
+      bot.comment(repo, issue, "✨ test passed! merging...")
+      bot.merge(repo, issue, sha)
+    end
   end
 
   def github_team(payload)
@@ -189,6 +216,11 @@ private
   def allowed?(repo, user)
     perms = installation.client.permission_level(repo, user)
     %w[admin write].include?(perms[:permission])
+  end
+
+  def command(*args)
+    commands = args.map{|a| Regexp.escape(a) }
+    /(?:\A|\b)#{Github.app.name} (#{commands.join('|')})(?:\z|\b)/
   end
 
 end
