@@ -170,6 +170,8 @@ class GithubWebhooksController < ActionController::Base
   end
 
   def github_status(payload)
+    branch_names = payload[:branches].map{|b| b[:name] }
+    return head(:ok) unless branch_names.include?("#{bot.name}/test")
   end
 
   def github_team(payload)
