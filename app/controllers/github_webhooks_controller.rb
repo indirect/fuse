@@ -1,5 +1,3 @@
-require "bot"
-
 class GithubWebhooksController < ActionController::Base
   include GithubWebhook::Processor
 

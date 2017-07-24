@@ -1,7 +1,7 @@
-require "github/app"
+require "rails_helper"
 
 RSpec.describe Github::App do
-  let(:key_path) { File.expand_path("../support/app_key.pem", __dir__) }
+  let(:key_path) { File.expand_path("../../support/app_key.pem", __dir__) }
   let(:app_config) { {id: "1234", name: "fuse", private_key: File.read(key_path)} }
   subject(:app) { Github::App.new(app_config) }
 

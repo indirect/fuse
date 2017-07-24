@@ -1,5 +1,3 @@
-require "github/client"
-
 class Installation < ApplicationRecord
   has_many :repositories, dependent: :delete_all
 
