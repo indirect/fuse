@@ -24,7 +24,7 @@ class Bot
 
     # Create a merge commit in the testing branch
     merge = github.post "#{Octokit::Repository.path repo}/merges", {
-      base: temp, head: pr.head.ref, commit_message: message
+      base: "#{name}/test.tmp", head: pr.head.ref, commit_message: message
     }
 
     # Move the merge commit to be tested by Travis
