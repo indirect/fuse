@@ -177,12 +177,17 @@ class GithubWebhooksController < ActionController::Base
 
     repo = payload[:name]
     sha = payload[:sha]
-    issue = TestBuild.find_by_sha!(sha).issue_number
+    test_build = TestBuild.find_by_sha!(sha)
+    issue = testbuild.issue_number
 
     case payload[:state]
     when "pending"
+      return head(:ok) if test_build.state == "pending"
+      test_build.update(state: "pending")
       bot.comment(repo, issue, "🚧 [test status](#{payload[:target_url]})")
     when "success"
+      return head(:ok) if test_build.state == "success"
+      test_build.update(state: "success")
       bot.comment(repo, issue, "✨ test passed! merging...")
       bot.merge(repo, issue, sha)
     end

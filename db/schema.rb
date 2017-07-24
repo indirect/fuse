@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 20170724072547) do
   create_table "test_builds", force: :cascade do |t|
     t.string "sha"
     t.bigint "issue_number"
+    t.string "state"
     t.bigint "repository_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
