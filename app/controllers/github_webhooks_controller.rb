@@ -107,6 +107,8 @@ class GithubWebhooksController < ActionController::Base
             Merges ##{issue}, r=#{approver}
           MESSAGE
           sha = bot.queue_test(repo, issue, message)
+          repository = Repository.find_by_full_name!(repo)
+          repository.test_builds.create!(sha: sha, issue_number: issue, comment_id: comment[:id])
         end
       end
     end
@@ -172,6 +174,20 @@ class GithubWebhooksController < ActionController::Base
   def github_status(payload)
     branch_names = payload[:branches].map{|b| b[:name] }
     return head(:ok) unless branch_names.include?("#{bot.name}/test")
+
+    repo = payload[:name]
+
+    case payload[:state]
+    when "pending"
+      comment = TestBuild.find_by_sha!(payload[:sha]).comment_id
+      addendum = "🚧 [Test status](#{payload[:target_url]})"
+      bot.announce_test(repo, comment, addendum)
+    when "success"
+      sha = payload[:sha]
+      issue = TestBuild.find_by_sha!(sha).issue_number
+      bot.comment(repo, issue, "✨ test passed! merging...")
+      bot.merge(repo, issue, sha)
+    end
   end
 
   def github_team(payload)
