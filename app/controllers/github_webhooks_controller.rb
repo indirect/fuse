@@ -175,10 +175,11 @@ class GithubWebhooksController < ActionController::Base
     branch_names = payload[:branches].map{|b| b[:name] }
     return head(:ok) unless branch_names.include?("#{bot.name}/test")
 
+    test_build = TestBuild.find_by_sha!(payload[:sha])
+    return head(:ok) if test_build.state == "success"
+
     repo = payload[:name]
-    sha = payload[:sha]
-    test_build = TestBuild.find_by_sha!(sha)
-    issue = testbuild.issue_number
+    issue = test_build.issue_number
 
     case payload[:state]
     when "pending"
@@ -186,10 +187,9 @@ class GithubWebhooksController < ActionController::Base
       test_build.update(state: "pending")
       bot.comment(repo, issue, "🚧 [test status](#{payload[:target_url]})")
     when "success"
-      return head(:ok) if test_build.state == "success"
       test_build.update(state: "success")
       bot.comment(repo, issue, "✨ test passed! merging...")
-      bot.merge(repo, issue, sha)
+      bot.merge(repo, issue, payload[:sha])
     end
   end
 
