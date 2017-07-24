@@ -93,7 +93,7 @@ class GithubWebhooksController < ActionController::Base
     case payload[:action]
     when "created"
       case payload[:comment][:body]
-      when /#{bot.name} r\+/
+      when /\b#{Github.app.name} r\+\b/
         repo = payload[:repository][:full_name]
         approver = payload[:comment][:user][:login]
 

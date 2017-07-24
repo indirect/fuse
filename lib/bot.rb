@@ -6,10 +6,6 @@ class Bot
     @github = github_client
   end
 
-  def name
-    Github.app.name
-  end
-
   def comment(repo, issue, body)
     github.add_comment(repo, issue, body)
   end
