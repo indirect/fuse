@@ -102,7 +102,7 @@ class GithubWebhooksController < ActionController::Base
           bot.comment(repo, issue, "Let's dance")
 
           message = "Merge ##{issue}, r=#{approver}"
-          bot.merge(repo, issue, message)
+          bot.test(repo, issue, message)
         end
       end
     end

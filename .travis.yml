@@ -9,3 +9,6 @@ services:
 branches:
   except:
     - fuse/test.tmp
+
+before_script:
+  - RAILS_ENV=test bin/rake db:setup

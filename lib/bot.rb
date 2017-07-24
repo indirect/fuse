@@ -11,30 +11,31 @@ class Bot
     github.add_comment(repo, issue, body)
   end
 
-  def test(repo, issue)
+  def test(repo, issue, message)
+    temp = "#{name}/test.tmp"
     # TODO store this in the database and update it on push webhooks
     pr = github.pull_request(repo, issue)
 
     # Create a temporary branch to act as the base for the merge
     begin
-      github.delete_ref(repo, "heads/#{name}/test.tmp", pr.base.sha)
+      github.delete_ref(repo, "heads/#{temp}", pr.base.sha)
     rescue Octokit::UnprocessableEntity
     end
-    github.create_ref(repo, "heads/#{name}/test.tmp", pr.base.sha)
+    github.create_ref(repo, "heads/#{temp}", pr.base.sha)
 
     # Create a merge commit in the testing branch
     github.post "#{Octokit::Repository.path repo}/merges", {
-      base: pr.base.ref, head: pr.head.ref, commit_message: message
+      base: temp, head: pr.head.ref, commit_message: message
     }
   end
 
-  def merge(repo, issue, message)
+  def merge(repo, issue)
     # TODO store this in the database and update it on push webhooks
     pr = github.pull_request(repo, issue)
 
     # Fast forward the base branch to the merge commit that tested green
     github.update_ref(repo, pr.base.ref, )
-    
+
     # TODO code
 
     # Delete the PR head if it's in the same repo as the base
