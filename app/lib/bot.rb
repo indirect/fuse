@@ -11,6 +11,12 @@ class Bot
     github.add_comment(repo, issue, body)
   end
 
+  def append_comment(repo, comment, addendum)
+    body = github.issue_comment(repo, comment)[:body]
+    new_body = [body, "\n", addendum].join("\n")
+    github.update_comment(repo, comment, new_body)
+  end
+
   def queue_test(repo, issue, message)
     # TODO store this in the database and update it on push webhooks
     pr = github.pull_request(repo, issue)
