@@ -54,7 +54,11 @@ class Bot
 
     # Delete the PR head if it's in the same repo as the base
     if pr.head.repo.full_name == pr.base.repo.full_name
-      github.delete_branch(repo, pr.head.ref)
+      begin
+        github.delete_branch(repo, pr.head.ref)
+      rescue Octokit::UnprocessableEntity
+        # cool, it must already be gone
+      end
     end
   end
 end
