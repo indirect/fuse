@@ -1,3 +1,4 @@
-language: ruby
 sudo: false
 dist: trusty
+language: ruby
+cache: bundler
