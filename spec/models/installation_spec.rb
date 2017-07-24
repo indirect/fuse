@@ -49,9 +49,11 @@ RSpec.describe Installation, type: :model do
 
   describe "generate_new_access_token!" do
     it "gets a new token from github and saves said token" do
-      expect(Github.app_client).to receive(:create_installation_access_token).with(7) do
+      app_client = instance_double(Github::Client)
+      expect(app_client).to receive(:create_installation_access_token).with(7) do
         {token: "new token", expires_at: (Time.now+60).iso8601}
       end
+      expect(Github).to receive(:app_client).and_return(app_client)
 
       expect { installation.generate_new_access_token! }.to change { installation.access_token }
     end

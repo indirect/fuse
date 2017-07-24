@@ -102,7 +102,7 @@ class GithubWebhooksController < ActionController::Base
           bot.comment(repo, issue, "Let's dance")
 
           message = "Merge ##{issue}, r=#{approver}"
-          bot.merge(repo, issue, message)
+          bot.test(repo, issue, message)
         end
       end
     end
@@ -185,7 +185,7 @@ private
   end
 
   def bot
-    @bot ||= Bot.new(installation.client) if installation
+    @bot ||= Bot.new(installation.client, Github.app.name) if installation
   end
 
   def allowed?(repo, user)

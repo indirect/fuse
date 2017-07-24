@@ -1,19 +1,16 @@
 require "github/app"
 
 RSpec.describe Github::App do
-  let(:id) { "1234" }
-  let(:key) do
-    key_path = File.expand_path("../support/app_key.pem", __dir__)
-    File.read(key_path)
-  end
-  subject(:app) { Github::App.new(id, key) }
+  let(:key_path) { File.expand_path("../support/app_key.pem", __dir__) }
+  let(:app_config) { {id: "1234", name: "fuse", private_key: File.read(key_path)} }
+  subject(:app) { Github::App.new(app_config) }
 
   it "has a #github_id" do
-    expect(app.github_id).to eq(id)
+    expect(app.github_id).to eq(app_config[:id])
   end
 
   it "has a #private_key" do
-    expect(app.private_key).to eq(key)
+    expect(app.private_key).to eq(File.read(key_path))
   end
 
   describe "#bearer_token" do
