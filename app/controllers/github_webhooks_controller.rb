@@ -97,7 +97,7 @@ class GithubWebhooksController < ActionController::Base
 
         if allowed?(repo, approver)
           issue = payload[:issue][:number]
-          comment = bot.comment(repo, issue, "⚔️ let's dance")
+          bot.comment(repo, issue, "⚔️ let's dance")
 
           message = <<~MESSAGE
             #{payload[:issue][:title]}
@@ -108,7 +108,7 @@ class GithubWebhooksController < ActionController::Base
           MESSAGE
           sha = bot.queue_test(repo, issue, message)
           repository = Repository.find_by_full_name!(repo)
-          repository.test_builds.create!(sha: sha, issue_number: issue, comment_id: comment[:id])
+          repository.test_builds.create!(sha: sha, issue_number: issue)
         end
       end
     end
