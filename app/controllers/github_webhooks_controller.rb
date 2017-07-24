@@ -91,7 +91,7 @@ class GithubWebhooksController < ActionController::Base
     case payload[:action]
     when "created"
       case payload[:comment][:body]
-      when /\b#{Github.app.name} r\+\b/
+      when command("r+")
         repo = payload[:repository][:full_name]
         approver = payload[:comment][:user][:login]
 
@@ -189,6 +189,11 @@ private
   def allowed?(repo, user)
     perms = installation.client.permission_level(repo, user)
     %w[admin write].include?(perms[:permission])
+  end
+
+  def command(*args)
+    commands = args.map{|a| Regexp.escape(a) }
+    /(?:\A|\b)#{Github.app.name} (#{commands.join('|')})(?:\z|\b)/
   end
 
 end
