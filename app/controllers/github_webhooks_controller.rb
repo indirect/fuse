@@ -95,12 +95,15 @@ class GithubWebhooksController < ActionController::Base
       case payload[:comment][:body]
       when /#{bot.name} r\+/
         repo = payload[:repository][:full_name]
-        issue = payload[:issue][:number]
-        bot.comment(repo, issue, "Let's dance")
-
         approver = payload[:comment][:user][:login]
-        message = "Merge ##{issue}, r=#{approver}"
-        bot.merge(repo, issue, message)
+
+        if allowed?(repo, approver)
+          issue = payload[:issue][:number]
+          bot.comment(repo, issue, "Let's dance")
+
+          message = "Merge ##{issue}, r=#{approver}"
+          bot.merge(repo, issue, message)
+        end
       end
     end
   end
@@ -183,6 +186,11 @@ private
 
   def bot
     @bot ||= Bot.new(installation.client) if installation
+  end
+
+  def allowed?(repo, user)
+    perms = installation.client.permission_level(repo, user)
+    %w[admin write].include?(perms[:permission])
   end
 
 end
