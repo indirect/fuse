@@ -189,7 +189,13 @@ class GithubWebhooksController < ActionController::Base
     when "pending"
       return head(:ok) if test_build.state == "pending"
       test_build.update(state: "pending")
-      bot.comment(repo, issue, "🚧 [test status](#{payload[:target_url]})")
+      bot.comment(repo, issue, "🚧 [test running](#{payload[:target_url]})")
+    when "failure"
+      test_build.update(state: "failure")
+      bot.comment(repo, issue, "🚨 [test failed](#{payload[:target_url]})")
+    when "error"
+      test_build.update(state: "error")
+      bot.comment(repo, issue, "💥 [test errored](#{payload[:target_url]})")
     when "success"
       test_build.update(state: "success")
       bot.comment(repo, issue, "✨ test passed! merging...")
