@@ -172,9 +172,13 @@ class GithubWebhooksController < ActionController::Base
   end
 
   def github_status(payload)
+    return head(:ok) unless payload[:context] == "continuous-integration/travis-ci/push"
+
+    # We only care about statuses for merges we make on our test branch
     branch_names = payload[:branches].map{|b| b[:name] }
     return head(:ok) unless branch_names.include?("#{bot.name}/test")
 
+    # Github sometimes sends statuses repeatedly with the same content :(
     test_build = TestBuild.find_by_sha!(payload[:sha])
     return head(:ok) if test_build.state == "success"
 
@@ -185,7 +189,13 @@ class GithubWebhooksController < ActionController::Base
     when "pending"
       return head(:ok) if test_build.state == "pending"
       test_build.update(state: "pending")
-      bot.comment(repo, issue, "🚧 [test status](#{payload[:target_url]})")
+      bot.comment(repo, issue, "🚧 [test running](#{payload[:target_url]})")
+    when "failure"
+      test_build.update(state: "failure")
+      bot.comment(repo, issue, "🚨 [test failed](#{payload[:target_url]})")
+    when "error"
+      test_build.update(state: "error")
+      bot.comment(repo, issue, "💥 [test errored](#{payload[:target_url]})")
     when "success"
       test_build.update(state: "success")
       bot.comment(repo, issue, "✨ test passed! merging...")
