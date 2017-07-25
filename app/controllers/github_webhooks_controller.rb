@@ -172,9 +172,11 @@ class GithubWebhooksController < ActionController::Base
   end
 
   def github_status(payload)
+    # We only care about statuses for merges we make on our test branch
     branch_names = payload[:branches].map{|b| b[:name] }
     return head(:ok) unless branch_names.include?("#{bot.name}/test")
 
+    # Github sometimes sends statuses repeatedly with the same content :(
     test_build = TestBuild.find_by_sha!(payload[:sha])
     return head(:ok) if test_build.state == "success"
 
