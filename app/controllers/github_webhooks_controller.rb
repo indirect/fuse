@@ -172,6 +172,8 @@ class GithubWebhooksController < ActionController::Base
   end
 
   def github_status(payload)
+    return head(:ok) unless payload[:context] == "continuous-integration/travis-ci/push"
+
     # We only care about statuses for merges we make on our test branch
     branch_names = payload[:branches].map{|b| b[:name] }
     return head(:ok) unless branch_names.include?("#{bot.name}/test")
