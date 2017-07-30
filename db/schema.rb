@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170724072547) do
+ActiveRecord::Schema.define(version: 20170725082825) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,7 +28,6 @@ ActiveRecord::Schema.define(version: 20170724072547) do
     t.bigint "installation_id"
     t.bigint "github_id"
     t.string "full_name"
-    t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["full_name"], name: "index_repositories_on_full_name"
