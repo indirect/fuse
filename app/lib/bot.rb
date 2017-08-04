@@ -60,6 +60,9 @@ class Bot
     # Fast forward the base branch to the merge commit that tested green
     github.update_ref(repo, "heads/#{pr.base.ref}", sha)
 
+    # Delete the bot testing branch
+    github.delete_ref(repo, "heads/#{name}/test")
+
     # Delete the PR head if it's in the same repo as the base
     if pr.head.repo.full_name == pr.base.repo.full_name
       begin
