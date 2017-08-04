@@ -99,13 +99,18 @@ class GithubWebhooksController < ActionController::Base
           issue = payload[:issue][:number]
           bot.comment(repo, issue, "⚔️ let's dance, @#{approver}")
 
+          pull_request = installation.client.pull_request(repo, issue)
+          pr_author = pull_request.user.login
+          pr_label = pull_request.head.label
+
           message = <<~MESSAGE
+            Merge ##{issue} by @#{pr_author} from #{pr_label}, r=#{approver}
+
             #{payload[:issue][:title]}
 
             #{payload[:issue][:body]}
-
-            Merges ##{issue}, r=#{approver}
           MESSAGE
+
           sha = bot.queue_test(repo, issue, message)
           repository = Repository.find_by_full_name!(repo)
           repository.test_builds.create!(sha: sha, issue_number: issue)
