@@ -189,21 +189,23 @@ class GithubWebhooksController < ActionController::Base
 
     repo = payload[:name]
     issue = test_build.issue_number
+    pull_request = installation.client.pull_request(repo, issue)
+    head_sha = pull_request.head.sha
 
     case payload[:state]
     when "pending"
       return head(:ok) if test_build.state == "pending"
       test_build.update(state: "pending")
-      bot.comment(repo, issue, "🚧 [test running](#{payload[:target_url]})")
+      bot.status(repo, head_sha, "pending", "The merge is being tested", payload[:target_url])
     when "failure"
       test_build.update(state: "failure")
-      bot.comment(repo, issue, "🚨 [test failed](#{payload[:target_url]})")
+      bot.status(repo, head_sha, "failure", "The merge commit failed the tests", payload[:target_url])
     when "error"
       test_build.update(state: "error")
-      bot.comment(repo, issue, "💥 [test errored](#{payload[:target_url]})")
+      bot.status(repo, head_sha, "error", "The merge commit tests errored", payload[:target_url])
     when "success"
       test_build.update(state: "success")
-      bot.comment(repo, issue, "✨ test passed! merging...")
+      bot.status(repo, head_sha, "success", "The merge commit tests passed", payload[:target_url])
       bot.merge(repo, issue, payload[:sha])
     end
   end
