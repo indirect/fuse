@@ -45,6 +45,14 @@ class Bot
     merge[:sha]
   end
 
+  def status(repo, sha, state, description, url)
+    github.create_status(repo, sha, state,
+      target_url: url,
+      description: description,
+      context: "merge/fuse"
+    )
+  end
+
   def merge(repo, issue, sha)
     # TODO store this in the database and update it on push webhooks
     pr = github.pull_request(repo, issue)

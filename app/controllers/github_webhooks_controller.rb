@@ -97,15 +97,20 @@ class GithubWebhooksController < ActionController::Base
 
         if allowed?(repo, approver)
           issue = payload[:issue][:number]
-          bot.comment(repo, issue, "⚔️ let's dance")
+          bot.comment(repo, issue, "⚔️ let's dance, @#{approver}")
+
+          pull_request = installation.client.pull_request(repo, issue)
+          pr_author = pull_request.user.login
+          pr_label = pull_request.head.label
 
           message = <<~MESSAGE
+            Merge ##{issue} by @#{pr_author} from #{pr_label}, r=#{approver}
+
             #{payload[:issue][:title]}
 
             #{payload[:issue][:body]}
-
-            Merges ##{issue}, r=#{approver}
           MESSAGE
+
           sha = bot.queue_test(repo, issue, message)
           repository = Repository.find_by_full_name!(repo)
           repository.test_builds.create!(sha: sha, issue_number: issue)
@@ -179,26 +184,28 @@ class GithubWebhooksController < ActionController::Base
     return head(:ok) unless branch_names.include?("#{bot.name}/test")
 
     # Github sometimes sends statuses repeatedly with the same content :(
-    test_build = TestBuild.find_by_sha!(payload[:sha])
-    return head(:ok) if test_build.state == "success"
+    test_build = TestBuild.find_by_sha(payload[:sha])
+    return head(:ok) if test_build.nil? || test_build.state == "success"
 
     repo = payload[:name]
     issue = test_build.issue_number
+    pull_request = installation.client.pull_request(repo, issue)
+    head_sha = pull_request.head.sha
 
     case payload[:state]
     when "pending"
       return head(:ok) if test_build.state == "pending"
       test_build.update(state: "pending")
-      bot.comment(repo, issue, "🚧 [test running](#{payload[:target_url]})")
+      bot.status(repo, head_sha, "pending", "The merge is being tested", payload[:target_url])
     when "failure"
       test_build.update(state: "failure")
-      bot.comment(repo, issue, "🚨 [test failed](#{payload[:target_url]})")
+      bot.status(repo, head_sha, "failure", "The merge commit failed the tests", payload[:target_url])
     when "error"
       test_build.update(state: "error")
-      bot.comment(repo, issue, "💥 [test errored](#{payload[:target_url]})")
+      bot.status(repo, head_sha, "error", "The merge commit tests errored", payload[:target_url])
     when "success"
       test_build.update(state: "success")
-      bot.comment(repo, issue, "✨ test passed! merging...")
+      bot.status(repo, head_sha, "success", "The merge commit tests passed", payload[:target_url])
       bot.merge(repo, issue, payload[:sha])
     end
   end
