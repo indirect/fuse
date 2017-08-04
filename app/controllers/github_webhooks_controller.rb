@@ -184,8 +184,8 @@ class GithubWebhooksController < ActionController::Base
     return head(:ok) unless branch_names.include?("#{bot.name}/test")
 
     # Github sometimes sends statuses repeatedly with the same content :(
-    test_build = TestBuild.find_by_sha!(payload[:sha])
-    return head(:ok) if test_build.state == "success"
+    test_build = TestBuild.find_by_sha(payload[:sha])
+    return head(:ok) if test_build.nil? || test_build.state == "success"
 
     repo = payload[:name]
     issue = test_build.issue_number
