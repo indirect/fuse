@@ -97,7 +97,7 @@ class GithubWebhooksController < ActionController::Base
 
         if allowed?(repo, approver)
           issue = payload[:issue][:number]
-          bot.comment(repo, issue, "⚔️ let's dance")
+          bot.comment(repo, issue, "⚔️ let's dance, @#{approver}")
 
           message = <<~MESSAGE
             #{payload[:issue][:title]}
