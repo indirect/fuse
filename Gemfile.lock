@@ -50,7 +50,7 @@ GEM
       activemodel (= 5.1.2)
       activesupport (= 5.1.2)
       arel (~> 8.0)
-    activerecord-import (0.19.1)
+    activerecord-import (0.20.2)
       activerecord (>= 3.2)
     activesupport (5.1.2)
       concurrent-ruby (~> 1.0, >= 1.0.2)
@@ -236,7 +236,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord-import (~> 0.19.1)
+  activerecord-import (~> 0.20.2)
   dotenv-rails (~> 2.2)
   github_webhook (~> 1.0)!
   guard-rspec

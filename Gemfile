@@ -3,7 +3,7 @@ git_source(:github) { |name|  "https://github.com/#{name}.git" }
 
 gem "rails", "5.1.2"
 
-gem "activerecord-import", "~> 0.19.1"
+gem "activerecord-import", "~> 0.20.2"
 gem "jwt", "~> 1.5"
 gem "github_webhook", "~> 1.0", github: "indirect/github_webhook", branch: "app-events"
 gem "octokit", "~> 4.7", github: "octokit/octokit.rb", branch: "master"
