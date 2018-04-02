@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 git_source(:github) { |name|  "https://github.com/#{name}.git" }
 
-gem "rails", "5.1.2"
+gem "rails", "5.1.6"
 
 gem "activerecord-import", "~> 0.19.1"
 gem "jwt", "~> 1.5"
