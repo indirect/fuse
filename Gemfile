@@ -10,7 +10,7 @@ gem "octokit", "~> 4.7", github: "octokit/octokit.rb", branch: "master"
 gem "pg", "~> 0.21"
 gem "puma", "~> 3.9"
 gem "sass-rails", "~> 5.0"
-gem "turbolinks", "~> 5.0"
+gem "turbolinks", "~> 5.1"
 gem "webpacker", "~> 2.0"
 
 group :development, :test do
