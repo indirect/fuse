@@ -15,7 +15,7 @@ gem "webpacker", "~> 2.0"
 
 group :development, :test do
   gem "dotenv-rails", "~> 2.2"
-  gem "pry-byebug", "~> 3.4"
+  gem "pry-byebug", "~> 3.7"
   gem "pry-rails", "~> 0.3.6"
   gem "rspec-rails", "~> 3.6"
 end
