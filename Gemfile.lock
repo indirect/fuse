@@ -9,10 +9,10 @@ GIT
 
 GIT
   remote: https://github.com/octokit/octokit.rb.git
-  revision: fa3caf34f4219eb35ecbeed27a8fc80587b005de
+  revision: ddf750601529a6a7da5fe5293d10031709b8605d
   branch: master
   specs:
-    octokit (4.7.0)
+    octokit (4.14.0)
       sawyer (~> 0.8.0, >= 0.5.3)
 
 GEM
@@ -57,8 +57,8 @@ GEM
       i18n (~> 0.7)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
-    addressable (2.5.1)
-      public_suffix (~> 2.0, >= 2.0.2)
+    addressable (2.5.2)
+      public_suffix (>= 2.0.2, < 4.0)
     arel (8.0.0)
     bindex (0.5.0)
     builder (3.2.3)
@@ -72,7 +72,7 @@ GEM
       dotenv (= 2.2.1)
       railties (>= 3.2, < 5.2)
     erubi (1.6.1)
-    faraday (0.12.2)
+    faraday (0.15.4)
       multipart-post (>= 1.2, < 3)
     ffi (1.9.18)
     formatador (0.2.5)
@@ -129,7 +129,7 @@ GEM
       pry (~> 0.10)
     pry-rails (0.3.6)
       pry (>= 0.10.4)
-    public_suffix (2.0.5)
+    public_suffix (3.0.3)
     puma (3.9.1)
     rack (2.0.3)
     rack-test (0.6.3)
@@ -244,7 +244,7 @@ DEPENDENCIES
   guard-rspec
   jwt (~> 1.5)
   listen (~> 3.1.5)
-  octokit (~> 4.7)!
+  octokit (~> 4.14)!
   pg (~> 0.21)
   pry-byebug (~> 3.4)
   pry-rails (~> 0.3.6)
