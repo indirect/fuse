@@ -9,7 +9,7 @@ gem "github_webhook", "~> 1.0", github: "indirect/github_webhook", branch: "app-
 gem "octokit", "~> 4.7", github: "octokit/octokit.rb", branch: "master"
 gem "pg", "~> 0.21"
 gem "puma", "~> 3.9"
-gem "sass-rails", "~> 5.0"
+gem "sass-rails", "~> 6.0"
 gem "turbolinks", "~> 5.0"
 gem "webpacker", "~> 2.0"
 
